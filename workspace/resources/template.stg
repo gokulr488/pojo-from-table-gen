@@ -1,0 +1,77 @@
+pojoTemplate(className,variables,gettersAndSetters) ::=<<
+package PojoFromTableGen.pojos.dos;
+
+import java.sql.Date;
+
+public class <className>Do {
+
+	<variables>
+	
+	<gettersAndSetters>
+	
+}
+>>
+
+getterSetter(dataType,capVariableName,smallVariableName) ::=<<
+public <dataType> get<capVariableName>() {
+	return <smallVariableName>;
+}
+
+public void set<capVariableName>(<dataType> <smallVariableName>) {
+	this.<smallVariableName> = <smallVariableName>;
+}
+	
+>>
+
+daoInterface(interfaceName,varName) ::=<<
+package PojoFromTableGen.pojos.daos;
+
+import java.sql.Connection;
+
+import PojoFromTableGen.pojos.dos.<interfaceName>Do;
+
+public interface <interfaceName>Dao {
+
+	public void insert(<interfaceName>Do <varName>Do, Connection conn);
+
+	public <interfaceName>Do retrieveById(long id, Connection conn);
+	
+}
+>>
+
+daoImpl(interfaceName,varName) ::=<<
+package PojoFromTableGen.pojos.daos;
+
+import java.sql.Connection;
+
+import PojoFromTableGen.pojos.dos.<interfaceName>Do;
+
+public interface <interfaceName>Dao {
+
+	public void insert(<interfaceName>Do <varName>Do, Connection conn);
+
+	public <interfaceName>Do retrieveById(long id, Connection conn);
+	
+}
+>>
+
+setterStatement(dataType,index,varName,getter) ::=<<
+stmt.set<dataType>(<index>, <varName>.get<getter>());
+>>
+
+insertQuery(className,varName,tableName,columns,values,setterStatements,refferingTableInsert) ::=<<
+public void insert(<className> <varName>, Connection conn) throws SQLException {
+
+		PreparedStatement stmt = conn
+				.prepareStatement("INSERT INTO <tableName>(<columns>) VALUES(<values>)");
+		<setterStatements>
+		stmt.executeUpdate();
+		<refferingTableInsert>
+	}
+>>
+sequenceCreateScript(className,varName,tableName,columns,values,setterStatements,refferingTableInsert) ::=<<
+CREATE SEQUENCE T_SUB_EVENT_SEQ
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 2;
+>>

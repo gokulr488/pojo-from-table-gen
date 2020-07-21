@@ -1,0 +1,19 @@
+url=jdbc:oracle:thin:@10.0.14.171:1521:vodacom
+username=SVC_ESB
+password=svc_esb
+
+tables=T_SUB_EVENT,SUB_ADR_LIST
+
+EVN_ATR_LIST,SUB_ADR_LIST,SUB_ATR_LIST,SUB_CLL_LIST,SUB_CNT_LIST,SUB_CTG_LIST,SUB_DTL_LIST,SUB_ID_LIST,SUB_ROL_LIST,SUB_SRV_ATR_LIST,SUB_SRV_ID_LIST,SUB_SRV_LIST,SUB_SRV_NE_LIST,T_EVN_ATR,T_SRV_ATR,T_SRV_ID,T_SRV_NE,T_SUB_ADR,T_SUB_ATR,T_SUB_CLL,T_SUB_CNT,T_SUB_CTG,T_SUB_DTL,T_SUB_EVENT,T_SUB_ID,T_SUB_ROL,T_SUB_SRV
+
+schema=SVC_ESB
+
+UAT details
+
+jdbc:oracle:thin:@localhost:1521:crmtst
+VoAQ12wsza#12317jem
+
+Release server details
+jdbc:oracle:thin:@10.0.14.171:1521:vodacom
+
+paswd  :  svc_esb

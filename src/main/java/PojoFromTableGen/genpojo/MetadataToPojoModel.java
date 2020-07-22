@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import PojoFromTableGen.tabledatacollector.Column;
+import PojoFromTableGen.tabledatacollector.ForeignKey;
 import PojoFromTableGen.tabledatacollector.Metadata;
+import PojoFromTableGen.tabledatacollector.PrimaryKey;
 import PojoFromTableGen.tabledatacollector.Table;
+import oracle.jdbc.proxy.annotation.GetDelegate;
 
 public class MetadataToPojoModel {
 	private Metadata metadata;
@@ -29,8 +32,33 @@ public class MetadataToPojoModel {
 				var.setColumnName(column.getColumnName());
 				variables.add(var);
 			}
-
 			model.setVariables(variables);
+
+			List<PojoFromTableGen.genpojo.ForeignKey> foreignKeys = new ArrayList<PojoFromTableGen.genpojo.ForeignKey>();
+			for (ForeignKey foreignKey : table.getForeignKeys()) {
+
+				PojoFromTableGen.genpojo.ForeignKey modelFKey = new PojoFromTableGen.genpojo.ForeignKey();
+
+				modelFKey.setColumnName(foreignKey.getRefferingColumnName());
+				modelFKey.setForeignTableEntityClassName(getClassName(foreignKey.getForeignTableName()));
+				foreignKeys.add(modelFKey);
+
+			}
+			model.setForeignKeys(foreignKeys);
+
+			PrimaryKey pKey = table.getPrimaryKeys().get(0);
+			PojoFromTableGen.genpojo.PrimaryKey primaryKey = new PojoFromTableGen.genpojo.PrimaryKey();
+			primaryKey.setColumnName(pKey.getPrimaryKey());
+			primaryKey.setVarName(getVariableName(pKey.getPrimaryKey()));
+			for (Column column : table.getColumns()) {
+				if (column.getColumnName().equals(pKey.getPrimaryKey())) {
+					primaryKey.setDataType(getJavaDataType(column.getDataType()));
+					break;
+				}
+			}
+
+			model.setPrimaryKey(primaryKey);
+
 			models.add(model);
 		}
 		return models;

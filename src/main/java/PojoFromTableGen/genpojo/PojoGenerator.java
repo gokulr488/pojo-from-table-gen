@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.stringtemplate.v4.ST;
 
+import PojoFromTableGen.GeneratorBase;
 import PojoFromTableGen.utils.FileWriteUtils;
 import PojoFromTableGen.utils.GenUtils;
 
-public class PojoGenerator {
+public class PojoGenerator extends GeneratorBase {
 
 	public void genDaoImpl(PojoModel model) {
 		String insertStatement = genInsertStmt(model.getVariables(), model.getClassName());
@@ -16,7 +17,7 @@ public class PojoGenerator {
 	public void generateDaoInterface(PojoModel model) {
 		ST pojoTemplate = GenUtils.getTemplate("resources\\template.stg", "daoInterface");
 		pojoTemplate.add("interfaceName", model.getClassName());
-		pojoTemplate.add("varName", getSmallVariableName(model.getClassName()));
+		pojoTemplate.add("varName", getSmallStartLetter(model.getClassName()));
 
 		FileWriteUtils writer = new FileWriteUtils();
 		writer.openFile("Daos\\" + model.getClassName() + "Dao.java");
@@ -46,43 +47,19 @@ public class PojoGenerator {
 	private String genInsertStmt(List<Variables> variables, String className) {
 		String statements = "";
 		int index = 1;
-		className = getSmallVariableName(className);
+		className = getSmallStartLetter(className);
 		for (Variables var : variables) {
 			ST temp = new ST("stmt.set<dataType>(<index>, <varName>.get<getter>());\n");
 			temp.add("dataType", var.getDataType());
 			temp.add("index", index);
-			temp.add("varName", className+"Do");
-			temp.add("getter", getCapVariableName(var.getVariableName()));
+			temp.add("varName", className + "Do");
+			temp.add("getter", getCapStartLetter(var.getVariableName()));
 
 			statements += temp.render();
 			index++;
 		}
 
 		return statements;
-	}
-
-	private String genGettersAndSetters(List<Variables> variables) {
-		String gettersAndSetters = "";
-
-		for (Variables var : variables) {
-			ST template = GenUtils.getTemplate("resources\\template.stg", "getterSetter");
-			template.add("dataType", var.getDataType());
-			template.add("capVariableName", getCapVariableName(var.getVariableName()));
-			template.add("smallVariableName", var.getVariableName());
-
-			gettersAndSetters += template.render() + "\n";
-		}
-		return gettersAndSetters;
-	}
-
-	private String getCapVariableName(String variableName) {
-		String str = variableName.substring(0, 1).toUpperCase() + variableName.substring(1);
-		return str;
-	}
-
-	private String getSmallVariableName(String variableName) {
-		String str = variableName.substring(0, 1).toLowerCase() + variableName.substring(1);
-		return str;
 	}
 
 	private String generateVariables(List<Variables> variables) {

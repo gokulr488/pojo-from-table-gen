@@ -7,6 +7,8 @@ public class PojoModel {
 	private String className;
 	private String tableName;
 	private List<Variables> variables;
+	private PrimaryKey primaryKey;
+	private List<ForeignKey> foreignKeys;
 	private List<String> imports;
 
 	public String getClassName() {
@@ -39,6 +41,22 @@ public class PojoModel {
 
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
+	}
+
+	public PrimaryKey getPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(PrimaryKey primaryKey) {
+		this.primaryKey = primaryKey;
+	}
+
+	public List<ForeignKey> getForeignKeys() {
+		return foreignKeys;
+	}
+
+	public void setForeignKeys(List<ForeignKey> foreignKeys) {
+		this.foreignKeys = foreignKeys;
 	}
 
 }

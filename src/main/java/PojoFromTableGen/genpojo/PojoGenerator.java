@@ -10,10 +10,6 @@ import PojoFromTableGen.utils.GenUtils;
 
 public class PojoGenerator extends GeneratorBase {
 
-	public void genDaoImpl(PojoModel model) {
-		String insertStatement = genInsertStmt(model.getVariables(), model.getClassName());
-	}
-
 	public void generateDaoInterface(PojoModel model) {
 		ST pojoTemplate = GenUtils.getTemplate("resources\\template.stg", "daoInterface");
 		pojoTemplate.add("interfaceName", model.getClassName());
@@ -24,6 +20,45 @@ public class PojoGenerator extends GeneratorBase {
 		writer.write(pojoTemplate.render());
 		System.out.println("Generated Dao interface for " + model.getClassName());
 		writer.close();
+	}
+
+	public void generateDaoImpl(PojoModel model) {
+		ST selectQuery = new ST("SELECT <columns> FROM <tableName>");
+		selectQuery.add("columns", getColumns(model.getVariables()));
+		selectQuery.add("tableName", model.getTableName());
+		ST daoImplTemp = GenUtils.getTemplate("resources\\template.stg", "daoTemplate");
+		daoImplTemp.add("selectQuery", selectQuery.render());
+		daoImplTemp.add("className", model.getClassName());
+		daoImplTemp.add("gettersFromResultSet", genGettersFromResSet(model));
+
+		FileWriteUtils writer = new FileWriteUtils();
+		writer.openFile("Daos\\" + model.getClassName() + "Dao.java");
+		writer.write(daoImplTemp.render());
+		System.out.println("Generated Dao IMPL for " + model.getClassName());
+		writer.close();
+
+	}
+
+	private String genGettersFromResSet(PojoModel model) {
+		String gettersFromResultSet = "";
+		for (Variables var : model.getVariables()) {
+			ST temp = new ST("eventsDo.set<setter>(res.get<dataType>(\"<columnName>\"));");
+			temp.add("setter", getCapStartLetter(var.getVariableName()));
+			temp.add("dataType", getCapStartLetter(var.getDataType()));
+			temp.add("columnName", var.getColumnName());
+			gettersFromResultSet += temp.render() + "\n";
+		}
+
+		return gettersFromResultSet;
+	}
+
+	private String getColumns(List<Variables> variables) {
+		String columns = "";
+		for (Variables var : variables) {
+			columns += var.getColumnName() + ",";
+		}
+		columns = columns.substring(0, columns.length() - 1);
+		return columns;
 	}
 
 	public void generatePojo(PojoModel model) {

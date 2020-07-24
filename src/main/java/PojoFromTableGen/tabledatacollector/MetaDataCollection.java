@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import PojoFromTableGen.Configs;
 
 public class MetaDataCollection {
@@ -23,10 +22,20 @@ public class MetaDataCollection {
 
 	private List<Table> getTables(DatabaseMetaData dataBaseMD) throws SQLException {
 
+		List<String> types = new ArrayList<String>();
+		ResultSet ress = dataBaseMD.getTableTypes();
+		while (ress.next()) {
+			types.add(ress.getString(1));
+		}
+		String typesArr[] = new String[types.size() + 1];
+		for (int j = 0; j < types.size(); j++) {
+			typesArr[j] = types.get(j);
+		}
+
 		List<Table> tables = new ArrayList<Table>();
 		for (String tableName : Configs.tables) {
 
-			ResultSet res = dataBaseMD.getTables(null, Configs.schema, tableName, null);
+			ResultSet res = dataBaseMD.getTables(null, null, tableName, typesArr);
 
 			while (res.next()) {
 				Table table = new Table();

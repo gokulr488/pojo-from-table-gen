@@ -1,6 +1,10 @@
 package PojoFromTableGen;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import PojoFromTableGen.genpojo.MetadataToPojoModel;
 import PojoFromTableGen.genpojo.PojoGenerator;
@@ -10,7 +14,7 @@ import PojoFromTableGen.tabledatacollector.Metadata;
 
 public class PojoFromTableGenStarter {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		try {
 			Configs.getAllConfigs();
 		} catch (IOException e) {
@@ -18,8 +22,13 @@ public class PojoFromTableGenStarter {
 			e.printStackTrace();
 		}
 		// DB Connection
+				
 		ConnectionManager conManager = new ConnectionManager();
-		conManager.getSourceConnection();
+//		EsbServiceSubscriptionMasterEventsDao dao=new EsbServiceSubscriptionMasterEventsDao();
+//		dao.findBy(9107L, conManager.getSourceConnection());
+		Connection conn=conManager.getSourceConnection();
+		PreparedStatement stmt = conn.prepareCall("call DBMS_SNAPSHOT.REFRESH('ESB_SERVICE_EVENTS','c')");
+		stmt.execute();
 		// Collect Metadata
 		Metadata metadata = conManager.getMetaData();
 		// Convert Metadata to Pojo Model
@@ -27,9 +36,9 @@ public class PojoFromTableGenStarter {
 		for (PojoModel model : converter.convert()) {
 			PojoGenerator gen = new PojoGenerator();
 			// Generate Pojos
-			//gen.generatePojo(model);
+			gen.generatePojo(model);
 			//gen.generateDaoInterface(model);
-			gen.genDaoImpl(model);
+			//gen.genDaoImpl(model);
 		}
 
 	}

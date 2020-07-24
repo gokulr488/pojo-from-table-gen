@@ -8,7 +8,6 @@ import PojoFromTableGen.tabledatacollector.ForeignKey;
 import PojoFromTableGen.tabledatacollector.Metadata;
 import PojoFromTableGen.tabledatacollector.PrimaryKey;
 import PojoFromTableGen.tabledatacollector.Table;
-import oracle.jdbc.proxy.annotation.GetDelegate;
 
 public class MetadataToPojoModel {
 	private Metadata metadata;
@@ -34,47 +33,56 @@ public class MetadataToPojoModel {
 			}
 			model.setVariables(variables);
 
-			List<PojoFromTableGen.genpojo.ForeignKey> foreignKeys = new ArrayList<PojoFromTableGen.genpojo.ForeignKey>();
-			for (ForeignKey foreignKey : table.getForeignKeys()) {
+			if (table.getForeignKeys() != null) {
+				List<PojoFromTableGen.genpojo.ForeignKey> foreignKeys = new ArrayList<PojoFromTableGen.genpojo.ForeignKey>();
+				for (ForeignKey foreignKey : table.getForeignKeys()) {
 
-				PojoFromTableGen.genpojo.ForeignKey modelFKey = new PojoFromTableGen.genpojo.ForeignKey();
+					PojoFromTableGen.genpojo.ForeignKey modelFKey = new PojoFromTableGen.genpojo.ForeignKey();
 
-				modelFKey.setColumnName(foreignKey.getRefferingColumnName());
-				modelFKey.setForeignTableEntityClassName(getClassName(foreignKey.getForeignTableName()));
-				foreignKeys.add(modelFKey);
+					modelFKey.setColumnName(foreignKey.getRefferingColumnName());
+					modelFKey.setForeignTableEntityClassName(getClassName(foreignKey.getForeignTableName()));
+					foreignKeys.add(modelFKey);
 
-			}
-			model.setForeignKeys(foreignKeys);
-
-			PrimaryKey pKey = table.getPrimaryKeys().get(0);
-			PojoFromTableGen.genpojo.PrimaryKey primaryKey = new PojoFromTableGen.genpojo.PrimaryKey();
-			primaryKey.setColumnName(pKey.getPrimaryKey());
-			primaryKey.setVarName(getVariableName(pKey.getPrimaryKey()));
-			for (Column column : table.getColumns()) {
-				if (column.getColumnName().equals(pKey.getPrimaryKey())) {
-					primaryKey.setDataType(getJavaDataType(column.getDataType()));
-					break;
 				}
+				model.setForeignKeys(foreignKeys);
 			}
+			if (table.getPrimaryKeys() != null) {
+				PrimaryKey pKey = table.getPrimaryKeys().get(0);
+				PojoFromTableGen.genpojo.PrimaryKey primaryKey = new PojoFromTableGen.genpojo.PrimaryKey();
+				primaryKey.setColumnName(pKey.getPrimaryKey());
+				primaryKey.setVarName(getVariableName(pKey.getPrimaryKey()));
+				for (Column column : table.getColumns()) {
+					if (column.getColumnName().equals(pKey.getPrimaryKey())) {
+						primaryKey.setDataType(getJavaDataType(column.getDataType()));
+						break;
+					}
+				}
 
-			model.setPrimaryKey(primaryKey);
-
+				model.setPrimaryKey(primaryKey);
+			}
 			models.add(model);
 		}
 		return models;
 	}
 
 	private String getJavaDataType(String dataType) {
+
 		if (dataType.equals("VARCHAR2")) {
 			return "String";
 		} else if (dataType.equals("NUMBER")) {
 			return "long";
 		} else if (dataType.equals("DATE")) {
 			return "Date";
+		} else if (dataType.equals("TIMESTAMP")) {
+			return "Timestamp";
+		} else if (dataType.equals("FLOAT")) {
+			return "float";
 		} else {
+
 			System.out.println("Unknwn : " + dataType);
 		}
 		return null;
+
 	}
 
 	private String getClassName(String tableName) {

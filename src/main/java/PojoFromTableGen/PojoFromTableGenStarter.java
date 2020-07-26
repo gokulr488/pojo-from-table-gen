@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import PojoFromTableGen.genpojo.MetadataToPojoModel;
 import PojoFromTableGen.genpojo.PojoGenerator;
@@ -24,8 +23,8 @@ public class PojoFromTableGenStarter {
 		// DB Connection
 				
 		ConnectionManager conManager = new ConnectionManager();
-//		EsbServiceSubscriptionMasterEventsDao dao=new EsbServiceSubscriptionMasterEventsDao();
-//		dao.findBy(9107L, conManager.getSourceConnection());
+//		EsbServiceDetailsEventsDao dao=new EsbServiceDetailsEventsDao();
+//		dao.findBy(11L, conManager.getSourceConnection());
 		Connection conn=conManager.getSourceConnection();
 		PreparedStatement stmt = conn.prepareCall("call DBMS_SNAPSHOT.REFRESH('ESB_SERVICE_EVENTS','c')");
 		stmt.execute();

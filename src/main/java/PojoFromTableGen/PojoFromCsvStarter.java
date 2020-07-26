@@ -15,7 +15,7 @@ public class PojoFromCsvStarter {
 
 	public static void main(String[] args) {
 		String inputFile = "resources\\metaData.txt";
-		String tableName = "ESB_QUEUE_EVENTS";
+		String tableName = "ESB_SERVICE_DETAILS_EVENTS";
 		Metadata metadata = fillMetadata(inputFile, tableName);
 
 		MetadataToPojoModel converter = new MetadataToPojoModel(metadata);
@@ -25,7 +25,7 @@ public class PojoFromCsvStarter {
 			
 			gen.generateDaoImpl(model);
 			
-			//gen.generatePojo(model);
+			gen.generatePojo(model);
 			// gen.generateDaoInterface(model);
 			// gen.genDaoImpl(model);
 		}

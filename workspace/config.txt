@@ -2,11 +2,17 @@ url=jdbc:oracle:thin:@10.0.10.120:1521:oracle
 username=vodacomuser
 password=vodacomuser
 
-tables=esb_service_subscription_master_events,esb_profile_events,esb_address_details_events,esb_service_events
+tables=order_message,trade_message
 
 EVN_ATR_LIST,SUB_ADR_LIST,SUB_ATR_LIST,SUB_CLL_LIST,SUB_CNT_LIST,SUB_CTG_LIST,SUB_DTL_LIST,SUB_ID_LIST,SUB_ROL_LIST,SUB_SRV_ATR_LIST,SUB_SRV_ID_LIST,SUB_SRV_LIST,SUB_SRV_NE_LIST,T_EVN_ATR,T_SRV_ATR,T_SRV_ID,T_SRV_NE,T_SUB_ADR,T_SUB_ATR,T_SUB_CLL,T_SUB_CNT,T_SUB_CTG,T_SUB_DTL,T_SUB_EVENT,T_SUB_ID,T_SUB_ROL,T_SUB_SRV
 
 schema=
+
+
+event xml db details
+jdbc:oracle:thin:@10.0.10.120:1521:oracle
+vodacomuser
+vodacomuser
 
 UAT details
 

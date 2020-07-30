@@ -2,12 +2,12 @@ package PojoFromTableGen;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import PojoFromTableGen.genpojo.MetadataToPojoModel;
 import PojoFromTableGen.genpojo.PojoGenerator;
 import PojoFromTableGen.genpojo.PojoModel;
+import PojoFromTableGen.pojos.daos.EsbContactAttachmentEventsDao;
 import PojoFromTableGen.tabledatacollector.ConnectionManager;
 import PojoFromTableGen.tabledatacollector.Metadata;
 
@@ -23,11 +23,11 @@ public class PojoFromTableGenStarter {
 		// DB Connection
 				
 		ConnectionManager conManager = new ConnectionManager();
-//		EsbServiceDetailsEventsDao dao=new EsbServiceDetailsEventsDao();
-//		dao.findBy(11L, conManager.getSourceConnection());
+		EsbContactAttachmentEventsDao dao=new EsbContactAttachmentEventsDao();
+		dao.findBy("V0006626",1L, conManager.getSourceConnection());
 		Connection conn=conManager.getSourceConnection();
-		PreparedStatement stmt = conn.prepareCall("call DBMS_SNAPSHOT.REFRESH('ESB_SERVICE_EVENTS','c')");
-		stmt.execute();
+		//PreparedStatement stmt = conn.prepareCall("call DBMS_SNAPSHOT.REFRESH('ESB_SERVICE_EVENTS','c')");
+		//stmt.execute();
 		// Collect Metadata
 		Metadata metadata = conManager.getMetaData();
 		// Convert Metadata to Pojo Model
@@ -36,6 +36,7 @@ public class PojoFromTableGenStarter {
 			PojoGenerator gen = new PojoGenerator();
 			// Generate Pojos
 			gen.generatePojo(model);
+			gen.generateDaoImpl(model);
 			//gen.generateDaoInterface(model);
 			//gen.genDaoImpl(model);
 		}

@@ -67,14 +67,18 @@ public class MetadataToPojoModel {
 
 	private String getJavaDataType(String dataType) {
 
-		if (dataType.equals("VARCHAR2")) {
+		if (dataType.equals("VARCHAR2") || dataType.equals("MEDIUMTEXT") || dataType.equals("VARCHAR")) {
 			return "String";
 		} else if (dataType.equals("NUMBER")) {
 			return "long";
 		} else if (dataType.equals("DATE")) {
 			return "Date";
+		} else if (dataType.equals("INT")) {
+			return "int";
 		} else if (dataType.equals("TIMESTAMP")) {
 			return "Timestamp";
+		} else if (dataType.equals("DOUBLE")) {
+			return "double";
 		} else if (dataType.equals("FLOAT")) {
 			return "float";
 		} else {
